@@ -9,13 +9,13 @@ COPY ./fastapi_test.py /app/fastapi_test.py
 COPY ./database.py /app/database.py
 COPY ./requirements.txt /app/requirements.txt
 COPY ./tmp.db /app/tmp.db
-COPY ./app.py /app/app.py
 
 # Install the required libraries
 RUN pip install -r ./requirements.txt
 
-# Expose the ports
-EXPOSE 8501 8000
+# Expose the port that FastAPI will run on
+EXPOSE 80
 
-# Run the Streamlit and FastAPI apps using uvicorn
-CMD ["sh", "-c", "streamlit run app.py & uvicorn fastapi_test:app --host 0.0.0.0 --port 8000"]
+# Command to run the FastAPI app with Uvicorn
+CMD ["uvicorn", "fastapi_test:app", "--host", "0.0.0.0", "--port", "80"]
+

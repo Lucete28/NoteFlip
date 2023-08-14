@@ -4,6 +4,8 @@ import fitz  # PyMuPDF
 from PIL import Image
 import io
 import time
+
+fast_api_path = 'http://0.0.0.0:8000'
 def page_set():
     if "current_page" not in st.session_state:
         st.session_state["current_page"] = "main"
@@ -77,7 +79,7 @@ def login(id,pwd):
         "ID": id,
         "PWD": pwd
     }
-    response = requests.post("https://fastapi-jhy-app.fly.dev/login", json=data)
+    response = requests.post(f"{fast_api_path}/login", json=data)
     if response.status_code == 200:
         st.session_state.user_id = id
         page_change('loadOrCreate')
@@ -106,7 +108,7 @@ def sign_up():
                 "PHONE_NUM": sign_up_PHONE_NUM,
                 "E_MAIL": sign_up_E_MAIL
             }
-            response = requests.post("https://fastapi-jhy-app.fly.dev/insert", json=data)
+            response = requests.post(f"{fast_api_path}/insert", json=data)
             if response.status_code == 200:
                 page_change('main',"회원가입에 성공하였습니다.")                
             elif response.status_code == 409:

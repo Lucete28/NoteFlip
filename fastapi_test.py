@@ -54,6 +54,27 @@ async def read_root():
 async def read_root():
     return {"message": "Hello, FastAPIasdfasdfasfas"}
 
+@app.put("/put")
+def insert_data():
+    session = SessionLocal()
+
+    # 예시로 고정된 값으로 데이터를 생성
+    data = {
+        "ID": "example_id",
+        "PWD": "example_pwd",
+        "PHONE_NUM": "123-456-7890",
+        "E_MAIL": "example@example.com"
+    }
+
+    existing_user = session.query(Customer).filter(Customer.ID == data["ID"]).first()
+    if existing_user:
+        raise HTTPException(status_code=409, detail="ID already exists")  # 409 Conflict
+
+    session.add(Customer(**data))
+    session.commit()
+    session.close()
+    return {"message": "Data insertion is complete"}
+
 @app.get("/customer")
 async def read_customer():
     session = SessionLocal()

@@ -77,7 +77,7 @@ def login(id,pwd):
         "ID": id,
         "PWD": pwd
     }
-    response = requests.post("http://127.0.0.1:8000/login", json=data)
+    response = requests.post("https://fastapi-jhy-app.fly.dev/login", json=data)
     if response.status_code == 200:
         st.session_state.user_id = id
         page_change('loadOrCreate')
@@ -106,7 +106,7 @@ def sign_up():
                 "PHONE_NUM": sign_up_PHONE_NUM,
                 "E_MAIL": sign_up_E_MAIL
             }
-            response = requests.post("http://127.0.0.1:8000/insert", json=data)
+            response = requests.post("https://fastapi-jhy-app.fly.dev/insert", json=data)
             if response.status_code == 200:
                 page_change('main',"회원가입에 성공하였습니다.")                
             elif response.status_code == 409:

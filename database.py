@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import text
 from sqlalchemy import DateTime
 from datetime import datetime
-import pytz
+
 
 DATABASE_URL = "sqlite:///tmp.db"
 engine = create_engine(DATABASE_URL)

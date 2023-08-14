@@ -11,7 +11,7 @@ from database import *
 app = FastAPI()
 
 # SQLite 데이터베이스 연결 설정
-DATABASE_URL = "sqlite:///tmp.db"
+DATABASE_URL = "sqlite:///app/tmp.db"
 engine = create_engine(DATABASE_URL)
 
 # 데이터베이스 세션 생성
@@ -49,6 +49,10 @@ class Music(Base):
 async def read_root():
     return {"message": "Hello, FastAPId"}
 
+
+@app.get("/hi")
+async def read_root():
+    return {"message": "Hello, FastAPIasdfasdfasfas"}
 
 @app.get("/customer")
 async def read_customer():
@@ -95,6 +99,6 @@ def login(data:dict):
         raise HTTPException(status_code=401, detail="로그인 실패")
 
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+# if __name__ == "__main__":
+#     import uvicorn
+#     uvicorn.run(app, host="127.0.0.1", port=8000)

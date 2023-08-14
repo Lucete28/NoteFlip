@@ -1,5 +1,5 @@
 # uvicorn fastapi_test:app --reload
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from sqlalchemy import create_engine, MetaData, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -79,6 +79,15 @@ def sign_up(data: dict):
     session.commit()
     session.close()
     return {"message": "Sign up is complete"}
+
+
+@app.post("/login")
+def login(data:dict):
+    session = SessionLocal()
+    user = session.query(Customer).filter(Customer.ID == data["ID"], Customer.PWD == data["PWD"]).first()
+    session.close()
+    return user
+
 
 if __name__ == "__main__":
     import uvicorn

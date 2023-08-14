@@ -1,6 +1,13 @@
 # NoteFlip
+### [Blueprint](https://web.goodnotes.com/s/amoOyouvueyljMJc66TCSH#page-2)
+### Front End
+- streamlit
 
-### JOB TO DO
-- [ ] fly.io로 fastapi 배포
-- [ ] streamlit 배포
-- [ ] 기능 구현
+### Back End
+- fastapi
+
+### Deploy
+- fly.io
+- docker
+
+

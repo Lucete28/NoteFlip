@@ -11,7 +11,7 @@ from database import *
 app = FastAPI()
 
 # SQLite 데이터베이스 연결 설정
-DATABASE_URL = "sqlite:///app/tmp.db"
+DATABASE_URL = "sqlite:///./tmp.db"
 engine = create_engine(DATABASE_URL)
 
 # 데이터베이스 세션 생성
@@ -54,6 +54,15 @@ async def read_root():
 async def read_root():
     return {"message": "Hello, FastAPIasdfasdfasfas"}
 
+# 테스트용 API 엔드포인트
+@app.get("/test-database-connection")
+async def test_database_connection():
+    try:
+        engine.connect()
+        return {"message": "Database connection successful"}
+    except Exception as e:
+        return {"error": str(e)}
+    
 @app.put("/put")
 def insert_data():
     session = SessionLocal()
@@ -123,3 +132,6 @@ def login(data:dict):
 # if __name__ == "__main__":
 #     import uvicorn
 #     uvicorn.run(app, host="127.0.0.1", port=8000)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

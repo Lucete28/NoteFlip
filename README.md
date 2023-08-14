@@ -1,5 +1,5 @@
 # NoteFlip
-### [Blueprint](https://web.goodnotes.com/s/amoOyouvueyljMJc66TCSH#page-2)
+### [Blueprint](https://web.goodnotes.com/s/amoOyouvueyljMJc66TCSH#page-1)
 ### Front End
 - streamlit
 

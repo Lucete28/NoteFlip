@@ -75,6 +75,9 @@ def get_music_by_cus_no(cus_no: int):
 @app.post("/insert")
 def sign_up(data: dict):
     session = SessionLocal()
+    existing_user = session.query(Customer).filter(Customer.ID == data["ID"]).first()
+    if existing_user:
+        raise HTTPException(status_code=409, detail="ID already exists")  # 409 Conflict
     session.add(Customer(**data))
     session.commit()
     session.close()
@@ -86,7 +89,10 @@ def login(data:dict):
     session = SessionLocal()
     user = session.query(Customer).filter(Customer.ID == data["ID"], Customer.PWD == data["PWD"]).first()
     session.close()
-    return user
+    if user:
+        return {"message": "로그인 성공"}
+    else:
+        raise HTTPException(status_code=401, detail="로그인 실패")
 
 
 if __name__ == "__main__":

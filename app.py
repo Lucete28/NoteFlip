@@ -3,7 +3,7 @@ import requests
 import fitz  # PyMuPDF
 from PIL import Image
 import io
-
+import time
 def page_set():
     if "current_page" not in st.session_state:
         st.session_state["current_page"] = "main"
@@ -16,13 +16,16 @@ def page_set():
 
 def main():
     st.title("NoteFlip")
+    if "alert_message" in st.session_state:
+        st.info(st.session_state["alert_message"])
+        st.session_state.pop("alert_message",None)
     ID = st.text_input("아이디")
     PWD = st.text_input("비밀번호")
     col1, col2 = st.columns(2)
 
     if col1.button("회원가입"):
-        st.session_state["current_page"] = 'sign_up'
-        st.experimental_rerun()
+        page_change('sign_up')
+
     if col2.button("로그인"):
         login(ID,PWD)
 
@@ -75,15 +78,12 @@ def login(id,pwd):
         "PWD": pwd
     }
     response = requests.post("http://127.0.0.1:8000/login", json=data)
-    st.write(response)
     if response.status_code == 200:
-        st.success("로그인 성공")
         st.session_state.user_id = id
-        st.session_state["current_page"]= 'loadOrCreate'
-        st.experimental_rerun()
+        page_change('loadOrCreate')
         
     else:
-        st.error("로그인 실패")
+        st.error("아이디 혹은 비밀번호를 확인해 주세요")
 
 def sign_up():
     st.title("회원가입 후 Note Flip을 이용하세요!")
@@ -108,13 +108,20 @@ def sign_up():
             }
             response = requests.post("http://127.0.0.1:8000/insert", json=data)
             if response.status_code == 200:
-                st.success("Data inserted successfully")
-                st.session_state["current_page"]= 'main'
-                st.experimental_rerun()
+                page_change('main',"회원가입에 성공하였습니다.")                
+            elif response.status_code == 409:
+                st.error("이미 존재하는 ID입니다")
             else:
-                st.error("Failed to insert data")
+                st.error("ERR")
 
+def page_change(page,message=None):
+    if message:
+        st.session_state["alert_message"] = message
+    st.session_state["current_page"]= f'{page}'
+    st.experimental_rerun()
 
+    
+        
 
 if __name__ == "__main__":
     page_set()

@@ -5,7 +5,7 @@ from PIL import Image
 import io
 import time
 
-fast_api_path = 'http://0.0.0.0:8000'
+fast_api_path = 'http://localhost:8000'
 def page_set():
     if "current_page" not in st.session_state:
         st.session_state["current_page"] = "main"
@@ -24,7 +24,9 @@ def main():
     ID = st.text_input("아이디")
     PWD = st.text_input("비밀번호")
     col1, col2 = st.columns(2)
-
+    if st.button("test_put"):
+        response = requests.put(f"{fast_api_path}/put")
+        st.success(response)
     if col1.button("회원가입"):
         page_change('sign_up')
 
@@ -115,6 +117,7 @@ def sign_up():
                 st.error("이미 존재하는 ID입니다")
             else:
                 st.error("ERR")
+                st.error(response.status_code)
 
 def page_change(page,message=None):
     if message:

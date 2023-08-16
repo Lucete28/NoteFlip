@@ -7,9 +7,24 @@ from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy import DateTime
 from datetime import datetime
 from database import *
+from sqlalchemy import LargeBinary
+from fastapi.middleware.cors import CORSMiddleware
 # FastAPI 애플리케이션 생성
 app = FastAPI()
+# CORS 설정 추가
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:5500",# FastAPI 서버 주소
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # SQLite 데이터베이스 연결 설정
 DATABASE_URL = "sqlite:///./tmp.db"
 engine = create_engine(DATABASE_URL)
@@ -37,7 +52,7 @@ class Music(Base):
     CUS_NO = Column(Integer, ForeignKey("customers.NO"))
     NAME = Column(String, index=True)
     URL = Column(String, index=True, default=None)
-    FILE = Column(String, index=True, default= None)
+    FILE = Column(LargeBinary)
     TIME = Column(String, index=True, default= None)
     DATE = Column(DateTime, default=datetime.utcnow, nullable=False)
     customers = relationship("Customer", back_populates="musics")
@@ -105,6 +120,13 @@ def get_music_by_cus_no(cus_no: int):
     session.close()
     return music
 
+@app.post("/set_music")
+def set_music(data:dict):
+    session = SessionLocal()
+    session.add(Music(**data))
+    session.commit()
+    session.close()
+    return {"message": "setting save complete"}
 
 @app.post("/insert")
 def sign_up(data: dict):
@@ -124,7 +146,7 @@ def login(data:dict):
     user = session.query(Customer).filter(Customer.ID == data["ID"], Customer.PWD == data["PWD"]).first()
     session.close()
     if user:
-        return {"message": "로그인 성공"}
+        return {"message": "로그인 성공", "ID": user.ID, "CUS_NO": user.NO}
     else:
         raise HTTPException(status_code=401, detail="로그인 실패")
 

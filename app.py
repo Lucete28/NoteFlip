@@ -4,6 +4,8 @@ import fitz  # PyMuPDF
 from PIL import Image
 import io
 import time
+from pytube import YouTube
+import webview
 
 fast_api_path = 'http://localhost:8000'
 def page_set():
@@ -15,6 +17,10 @@ def page_set():
         sign_up()
     elif st.session_state["current_page"] == 'loadOrCreate':
         loadOrCreate()
+    elif st.session_state["current_page"] == 'create_setting':
+        create_setting()
+    elif st.session_state["current_page"] == 'create_setting_2':
+        create_setting_2()
 
 def main():
     st.title("NoteFlip")
@@ -29,13 +35,63 @@ def main():
         st.success(response)
     if col1.button("회원가입"):
         page_change('sign_up')
-
     if col2.button("로그인"):
         login(ID,PWD)
+        
+def create_setting_2():
+    play_youtube_video(st.session_state["set_youtube_url"])
+def play_youtube_video(youtube_url):
+    st.video(youtube_url)
+
+def create_setting():
+    c1, c2 = st.columns(2)
+    setting_name = c1.text_input("세팅 이름")
+    youtube_url = c1.text_input("Youtube 주소")
+    
+    pdf_file = c1.file_uploader("Upload a PDF file", type=["pdf"])
+    
+    if pdf_file is not None:
+        pdf_document = fitz.open(stream=pdf_file.read(), filetype="pdf")
+        num_pages = pdf_document.page_count
+        
+        page_number = c2.slider("Select a page", 1, num_pages, 1)
+        
+        c2.write(f"Displaying page {page_number} of {num_pages}")
+        
+        page = pdf_document.load_page(page_number - 1)
+        pixmap = page.get_pixmap()
+        
+        # Convert pixmap to PIL Image
+        pil_image = Image.frombytes("RGB", [pixmap.width, pixmap.height], pixmap.samples)
+        
+        # Convert PIL Image to bytes
+        image_bytes = io.BytesIO()
+        pil_image.save(image_bytes, format="JPEG")
+        
+        c2.image(image_bytes)
+    if st.button("완료"):
+        if pdf_file and pdf_file.size > 1 * 1024 * 1024:
+            st.error("Uploaded PDF file size exceeds 1MB.")
+            return
+        
+        # if youtube_url:
+        #     try:
+        #         st.video(youtube_url)
+        #         # play_youtube_video(youtube_url)   
+        #     except Exception as e:
+        #         st.error(e)
+        
+        st.session_state["set_setting_name"] = setting_name
+        st.session_state["set_youtube_url"] = youtube_url
+        st.session_state["set_pdf_file"] = pdf_file
+        page_change('create_setting_2')
+        
+
 
 def loadOrCreate():
     st.title(f"{st.session_state.user_id}님 환영합니다.")
-    st.button("생성하기")
+    if st.button("생성하기"):
+        page_change('create_setting')
     st.button("불러오기")
     st.markdown(
     """

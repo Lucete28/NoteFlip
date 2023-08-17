@@ -8,7 +8,7 @@ from sqlalchemy import DateTime
 from datetime import datetime
 
 
-DATABASE_URL = "sqlite:///tmp.db"
+DATABASE_URL = "sqlite:///tmp2.db"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -47,9 +47,9 @@ def do_query(query):
     session.commit()
     session.close()
     return result
-# if __name__ == "__main__":
-#     Base.metadata.create_all(bind=engine)
+if __name__ == "__main__":
+    Base.metadata.create_all(bind=engine)
 
-# # query = text("INSERT INTO customers (ID, PWD, PHONE_NUM, E_MAIL) VALUES ('Lucete', 'wjdghdus1!', '01039972802', '2580jhy@naver.com')")
+query = text("INSERT INTO customers (ID, PWD, PHONE_NUM, E_MAIL) VALUES ('Lucete', 'wjdghdus1!', '01039972802', '2580jhy@naver.com')")
 # query = text("SELECT * FROM customers")
 # print(do_query(query))
